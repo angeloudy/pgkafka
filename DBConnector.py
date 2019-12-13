@@ -3,9 +3,9 @@ import logging
 
 logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', filename='./db.log')
 class DBConnector:
-    def __init__(self, host='localhost', db='postgres', user='user', password='pass'):
+    def __init__(self, host='localhost', port=5432, db='postgres', user='user', password='pass'):
         try:
-            self.conn = psycopg2.connect(host=host, database=db, user=user, password=password)
+            self.conn = psycopg2.connect(host=host, database=db, port=port, user=user, password=password)
         except Exception as e:
             self.conn = None
 

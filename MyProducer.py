@@ -3,23 +3,27 @@ import json
 from kafka.producer import KafkaProducer
 import time
 
-KAFKA_SERVER = "127.0.0.1:9092"
+class MyProducer:
+    def __init__(self):
+        pass
 
+    def collect_metrics(self):
+        metrics = {
+            'name': 'cpu_usage',
+            'value': int(psutil.cpu_percent()),
+            'clock': int(time.time())
+        }
+        return metrics
 
-def collect_metrics():
-    metrics = {
-        'name': 'cpu_usage',
-        'value': int(psutil.cpu_percent()),
-        'clock': int(time.time())
-    }
-    return metrics
+    def run(self):
+        collect_interval = 5
+        with open('config/kafka.json') as conf:
+            kafka_config = json.load(conf)
+        producer = KafkaProducer(**kafka_config)
+        while True:
+            f = producer.send('osmetrics', json.dumps(self.collect_metrics()).encode('utf-8'))
+            producer.flush()
+            time.sleep(collect_interval)
 
-
-producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER)
-while True:
-    f = producer.send('first_topic', json.dumps(collect_metrics()).encode('utf-8'))
-    producer.flush()
-    time.sleep(5)
-
-
-
+myproducer = MyProducer()
+myproducer.run()
