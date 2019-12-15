@@ -1,6 +1,6 @@
 from kafka import KafkaConsumer
 import json
-from DBConnector import DBConnector
+from pgkafka.db import DBConnector
 
 class MyConsumer:
     def __init__(self):
