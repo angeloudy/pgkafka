@@ -2,6 +2,7 @@ import psutil
 import json
 from kafka.producer import KafkaProducer
 import time
+from pgkafka.defs import ROOT_DIR
 
 class MyProducer:
     def __init__(self):
@@ -15,9 +16,9 @@ class MyProducer:
         }
         return metrics
 
-    def run(self):
+    def startd(self):
         collect_interval = 5
-        with open('config/kafka.json') as conf:
+        with open(f'{ROOT_DIR}/config/kafka.json') as conf:
             kafka_config = json.load(conf)
         producer = KafkaProducer(**kafka_config)
         while True:
@@ -25,5 +26,3 @@ class MyProducer:
             producer.flush()
             time.sleep(collect_interval)
 
-myproducer = MyProducer()
-myproducer.run()

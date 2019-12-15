@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
+from setuptools import setup
 
 setup(name='pgkafka',
       version='0.1',
@@ -15,4 +15,8 @@ setup(name='pgkafka',
           'Environment :: Console',
           'Operating System :: POSIX',
           'Programming Language :: Python3.7'],
-      test_suite="tests")
+      test_suite="tests",
+      install_requires=[
+          "kafka-python",
+          "psycopg2"]
+      )

@@ -1,13 +1,14 @@
 from kafka import KafkaConsumer
 import json
-from pgkafka.db import DBConnector
+from pgkafka.db.DBConnector import DBConnector
+from pgkafka.defs import ROOT_DIR
 
 class MyConsumer:
     def __init__(self):
         pass
 
-    def run(self):
-        config = json.load(open('config/psql.json'))
+    def startd(self):
+        config = json.load(open(f'{ROOT_DIR}/config/psql.json'))
         connector = DBConnector(**config)
         table = {
             'name': "varchar(20)",
@@ -18,13 +19,11 @@ class MyConsumer:
         METRIC_TABLE = 'osmetrics'
         connector.create_table(METRIC_TABLE, table)
 
-        KAFKA_SERVER = "127.0.0.1:9092"
-
-        consumer = KafkaConsumer('osmetrics', bootstrap_servers=KAFKA_SERVER)
+        with open(f'{ROOT_DIR}/config/kafka.json') as conf:
+            kafka_config = json.load(conf)
+        consumer = KafkaConsumer('osmetrics', **kafka_config)
         for msg in consumer:
             data = json.loads(msg.value.decode('utf-8'))
             query = f'INSERT INTO {METRIC_TABLE} values {str(tuple(data.values()))}'
             connector.run_query(query)
 
-myconsumer = MyConsumer()
-myconsumer.run()
