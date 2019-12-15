@@ -31,16 +31,3 @@ class DBConnector:
             self.conn.commit()
         except Exception as e:
             logging.error(f'Error while executing query {query}', {e})
-
-
-connector = DBConnector('localhost', db='taozhou', user='taozhou', password='')
-table = {
-    'name': "varchar(20)",
-    'value': 'varchar(20)',
-    'clock': 'int'
-}
-
-connector.create_table('osmetrics', table)
-
-
-
